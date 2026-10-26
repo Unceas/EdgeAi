@@ -244,6 +244,26 @@ class TestApiEndpoints:
         })
         assert res.status_code == 422
 
+    def test_predict_non_numeric_input_422(self, client):
+        res = client.post("/predict", json={
+            "channel_1": ["invalid_str"] * 20,
+            "channel_2": [0.1] * 20
+        })
+        assert res.status_code == 422
+
+    def test_predict_model_validation_rejects_nan_and_inf(self):
+        import math
+        from main import PredictRequest
+        from pydantic import ValidationError
+
+        # Reject NaN
+        with pytest.raises((ValueError, ValidationError)):
+            PredictRequest(channel_1=[math.nan] * 20, channel_2=[0.1] * 20)
+
+        # Reject Inf
+        with pytest.raises((ValueError, ValidationError)):
+            PredictRequest(channel_1=[math.inf] * 20, channel_2=[0.1] * 20)
+
     def test_grip_control_valid(self, client):
         res = client.post("/grip/control", json={"predicted_grip": "PINCH_GRIP", "simulated_contact": True})
         assert res.status_code == 200
@@ -255,10 +275,17 @@ class TestApiEndpoints:
         res = client.post("/grip/control", json={"predicted_grip": "SUPER_GRIP"})
         assert res.status_code == 422
 
+    def test_grip_control_invalid_pressure_override_422(self, client):
+        res = client.post("/grip/control", json={"predicted_grip": "POWER_GRIP", "pressure_override": 999.0})
+        assert res.status_code == 422
+
     def test_calibration_and_reset(self, client):
-        cal = client.post("/calibrate", json={"subject_id": "test_subj"})
+        cal = client.post("/calibrate", json={"subject_id": "test_subj", "simulated_duration_s": 2.5})
         assert cal.status_code == 200
-        assert cal.json()["status"] == "calibrated"
+        data = cal.json()
+        assert data["status"] == "calibrated"
+        assert "calibration_type" in data
+        assert "disclaimer" in data
 
         rst = client.post("/reset")
         assert rst.status_code == 200

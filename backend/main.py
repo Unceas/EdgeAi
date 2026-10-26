@@ -9,6 +9,8 @@ Demonstrates:
 - User baseline calibration
 """
 
+import math
+import platform
 from typing import Dict, List, Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -81,6 +83,11 @@ class PredictRequest(BaseModel):
             raise ValueError(f"Channel length mismatch: channel_1 has {len1} samples, but channel_2 has {len2} samples.")
         if len1 < 20:
             raise ValueError(f"EMG window size too small ({len1} samples). Minimum supported window size is 20 samples.")
+        
+        # Enforce numeric finiteness (no NaN or Inf)
+        for i in range(len1):
+            if not (math.isfinite(self.channel_1[i]) and math.isfinite(self.channel_2[i])):
+                raise ValueError(f"EMG channel samples must all be finite real numbers (found non-finite value at sample {i}).")
         return self
 
 
@@ -88,7 +95,7 @@ class GripControlRequest(BaseModel):
     predicted_grip: str = Field(default="POWER_GRIP")
     simulated_contact: bool = Field(default=False)
     slip_trigger: bool = Field(default=False)
-    pressure_override: Optional[float] = None
+    pressure_override: Optional[float] = Field(default=None, ge=0.0, le=150.0)
 
     @field_validator("predicted_grip")
     @classmethod
@@ -97,10 +104,17 @@ class GripControlRequest(BaseModel):
             raise ValueError(f"Invalid predicted grip '{v}'. Must be one of: {sorted(list(VALID_GRIP_STATES))}")
         return v
 
+    @field_validator("pressure_override")
+    @classmethod
+    def validate_pressure_override(cls, v: Optional[float]) -> Optional[float]:
+        if v is not None and not math.isfinite(v):
+            raise ValueError("pressure_override must be a finite number.")
+        return v
+
 
 class CalibrationRequest(BaseModel):
-    subject_id: str = Field(default="clinics_eval_01")
-    simulated_duration_s: float = Field(default=2.5)
+    subject_id: str = Field(default="clinics_eval_01", min_length=1, max_length=64)
+    simulated_duration_s: float = Field(default=2.5, ge=0.5, le=10.0)
 
 
 @app.get("/health")
@@ -109,7 +123,7 @@ def health_check():
         "status": "online",
         "mode": "simulation",
         "model_trained": classifier.is_trained,
-        "disclaimer": "Sensor inputs are simulated for prototype validation."
+        "disclaimer": "Sensor inputs are simulated for prototype validation. Not connected to physical hardware."
     }
 
 
@@ -142,7 +156,7 @@ def update_grip_control(req: GripControlRequest):
 @app.post("/calibrate")
 def run_calibration(req: CalibrationRequest):
     """
-    Simulate user calibration routine: measures resting noise floor and sets individualized MVC scaling.
+    Simulate user baseline calibration routine: measures resting noise floor and sets individualized MVC scaling.
     """
     import random
     # Simulated calibration measurements
@@ -154,13 +168,15 @@ def run_calibration(req: CalibrationRequest):
     return {
         "status": "calibrated",
         "subject_id": req.subject_id,
+        "calibration_type": "synthetic_baseline_simulation",
+        "disclaimer": "Simulated resting baseline calibration; does not connect to physical biosignal electrodes.",
         "parameters": {
             "baseline_noise_floor_v": calibrated_noise,
             "mvc_gain_multiplier": calibrated_gain,
             "sampling_window_samples": 200,
             "adc_resolution_bits": 12
         },
-        "message": "User calibration profile successfully stored in state."
+        "message": "Synthetic calibration profile successfully stored in simulator state."
     }
 
 
@@ -181,6 +197,9 @@ def get_metrics():
         "supported_classes": classifier.classes,
         "controller_deadband_n": controller.DEADBAND,
         "controller_max_safe_pressure_n": controller.MAX_SAFE_PRESSURE,
+        "benchmark_environment": f"Host CPU ({platform.machine()}, Python {platform.python_version()})",
+        "evaluation_methodology": "5-Fold Stratified Cross-Validation & 25% Stratified Holdout Test",
+        "synthetic_dataset_disclaimer": "Metrics evaluated on synthetic Gaussian process sEMG simulation. Not measured human clinical EMG.",
         "disclaimer": "Sensor inputs are simulated for prototype validation."
     }
 

@@ -138,13 +138,16 @@ export const App: React.FC = () => {
 
   // Manual Grip Selection Handler
   const handleSelectGrip = (grip: GripType) => {
+    if (isDemoRunning) {
+      handleStopDemo();
+    }
     setActiveGrip(grip);
     addLog('SIGNAL', `EMG window generated for intention: ${grip.replace('_', ' ')}`);
     executePipelineStep(grip).then((res) => {
       if (res?.pred) {
         addLog(
           'INFERENCE',
-          `Classified: ${res.pred.predicted_grip} (${res.pred.confidence_percent.toFixed(1)}% conf in ${res.pred.simulated_inference_time_ms} ms)`
+          `Classified: ${res.pred.predicted_grip.replace('_', ' ')} (${res.pred.confidence_percent.toFixed(1)}% conf in ${res.pred.simulated_inference_time_ms} ms)`
         );
       }
     });
@@ -200,6 +203,7 @@ export const App: React.FC = () => {
     addLog('SYSTEM', 'Starting automated 27-second end-to-end demonstration sequence.');
 
     let elapsedSeconds = 0;
+    let inFlight = false;
     setDemoPhase('0–3s: Open Hand baseline resting state');
     setActiveGrip('OPEN');
     executePipelineStep('OPEN', false, false).then((res) => {
@@ -213,151 +217,157 @@ export const App: React.FC = () => {
     });
 
     const interval = window.setInterval(async () => {
-      elapsedSeconds += 1;
+      if (inFlight) return;
+      inFlight = true;
+      try {
+        elapsedSeconds += 1;
 
-      // 0–3 sec: Open Hand Baseline
-      if (elapsedSeconds < 3) {
-        setDemoPhase(`0–3s: Open Hand baseline muscle resting state (${elapsedSeconds}s)`);
-        setActiveGrip('OPEN');
-        await executePipelineStep('OPEN', false, false);
-      }
-
-      // 3–6 sec: Power Grip Triggered & Closing Actuation
-      else if (elapsedSeconds === 3) {
-        setDemoPhase('3–6s: User activates Power Grip intention');
-        setActiveGrip('POWER_GRIP');
-        const res = await executePipelineStep('POWER_GRIP', false, false);
-        addLog('SIGNAL', 'High-amplitude co-contraction EMG surge detected');
-        if (res?.pred) {
-          addLog(
-            'INFERENCE',
-            `Classifier output: ${res.pred.predicted_grip.replace('_', ' ')} (${res.pred.confidence_percent.toFixed(1)}% conf in ${res.pred.simulated_inference_time_ms} ms)`
-          );
+        // 0–3 sec: Open Hand Baseline
+        if (elapsedSeconds < 3) {
+          setDemoPhase(`0–3s: Open Hand baseline muscle resting state (${elapsedSeconds}s)`);
+          setActiveGrip('OPEN');
+          await executePipelineStep('OPEN', false, false);
         }
-        addLog('ACTUATION', 'Actuator closing command transmitted to finger servos');
-      } else if (elapsedSeconds < 6) {
-        setDemoPhase(`3–6s: Fingers closing towards object (${elapsedSeconds}s)`);
-        setActiveGrip('POWER_GRIP');
-        await executePipelineStep('POWER_GRIP', false, false);
-      }
 
-      // 6–9 sec: Object Contact Detected on FSR Tactile Sensors
-      else if (elapsedSeconds === 6) {
-        setDemoPhase('6–9s: Object contact detected on tactile FSR pads');
-        const res = await executePipelineStep('POWER_GRIP', true, false);
-        if (res?.ctrl) {
-          addLog(
-            'TACTILE',
-            `Initial physical contact detected on distal sensors (${res.ctrl.current_pressure_n.toFixed(1)} N)`
-          );
+        // 3–6 sec: Power Grip Triggered & Closing Actuation
+        else if (elapsedSeconds === 3) {
+          setDemoPhase('3–6s: User activates Power Grip intention');
+          setActiveGrip('POWER_GRIP');
+          const res = await executePipelineStep('POWER_GRIP', false, false);
+          addLog('SIGNAL', 'High-amplitude co-contraction EMG surge detected');
+          if (res?.pred) {
+            addLog(
+              'INFERENCE',
+              `Classifier output: ${res.pred.predicted_grip.replace('_', ' ')} (${res.pred.confidence_percent.toFixed(1)}% conf in ${res.pred.simulated_inference_time_ms} ms)`
+            );
+          }
+          addLog('ACTUATION', 'Actuator closing command transmitted to finger servos');
+        } else if (elapsedSeconds < 6) {
+          setDemoPhase(`3–6s: Fingers closing towards object (${elapsedSeconds}s)`);
+          setActiveGrip('POWER_GRIP');
+          await executePipelineStep('POWER_GRIP', false, false);
         }
-      } else if (elapsedSeconds < 9) {
-        setDemoPhase(`6–9s: Tactile engagement and initial pressure (${elapsedSeconds}s)`);
-        await executePipelineStep('POWER_GRIP', true, false);
-      }
 
-      // 9–12 sec: Grip Pressure Increases toward Target
-      else if (elapsedSeconds === 9) {
-        setDemoPhase('9–12s: Grip pressure below setpoint; adaptive controller stepping up');
-        const res = await executePipelineStep('POWER_GRIP', true, false);
-        if (res?.ctrl) {
-          addLog(
-            'ADAPTIVE',
-            `Pressure (${res.ctrl.current_pressure_n.toFixed(1)} N) < Target (${res.ctrl.target_pressure_n.toFixed(1)} N): Proportional force increment applied`
-          );
+        // 6–9 sec: Object Contact Detected on FSR Tactile Sensors
+        else if (elapsedSeconds === 6) {
+          setDemoPhase('6–9s: Object contact detected on tactile FSR pads');
+          const res = await executePipelineStep('POWER_GRIP', true, false);
+          if (res?.ctrl) {
+            addLog(
+              'TACTILE',
+              `Initial physical contact detected on distal sensors (${res.ctrl.current_pressure_n.toFixed(1)} N)`
+            );
+          }
+        } else if (elapsedSeconds < 9) {
+          setDemoPhase(`6–9s: Tactile engagement and initial pressure (${elapsedSeconds}s)`);
+          await executePipelineStep('POWER_GRIP', true, false);
         }
-      } else if (elapsedSeconds < 12) {
-        setDemoPhase(`9–12s: Adaptive force ramping towards setpoint (${elapsedSeconds}s)`);
-        await executePipelineStep('POWER_GRIP', true, false);
-      }
 
-      // 12–15 sec: Adaptive Controller Stabilizes Grip
-      else if (elapsedSeconds === 12) {
-        setDemoPhase('12–15s: Target pressure reached. Controller maintaining stable grip');
-        const res = await executePipelineStep('POWER_GRIP', true, false);
-        if (res?.ctrl) {
-          addLog(
-            'ADAPTIVE',
-            `Stable grip achieved (${res.ctrl.current_pressure_n.toFixed(1)} N within deadband). Servos holding position.`
-          );
+        // 9–12 sec: Grip Pressure Increases toward Target
+        else if (elapsedSeconds === 9) {
+          setDemoPhase('9–12s: Grip pressure below setpoint; adaptive controller stepping up');
+          const res = await executePipelineStep('POWER_GRIP', true, false);
+          if (res?.ctrl) {
+            addLog(
+              'ADAPTIVE',
+              `Pressure (${res.ctrl.current_pressure_n.toFixed(1)} N) < Target (${res.ctrl.target_pressure_n.toFixed(1)} N): Proportional force increment applied`
+            );
+          }
+        } else if (elapsedSeconds < 12) {
+          setDemoPhase(`9–12s: Adaptive force ramping towards setpoint (${elapsedSeconds}s)`);
+          await executePipelineStep('POWER_GRIP', true, false);
         }
-      } else if (elapsedSeconds < 15) {
-        setDemoPhase(`12–15s: Grasp equilibrium maintained (${elapsedSeconds}s)`);
-        await executePipelineStep('POWER_GRIP', true, false);
-      }
 
-      // 15–18 sec: Simulated Slip Event Detected
-      else if (elapsedSeconds === 15) {
-        setDemoPhase('15–18s: Simulated payload slip event detected!');
-        slipTriggerRef.current = true;
-        const res = await executePipelineStep('POWER_GRIP', true, true);
-        addLog('TACTILE', 'ALERT: Sudden micro-slip detected at tactile sensor interface!');
-        if (res?.ctrl) {
-          addLog(
-            'ADAPTIVE',
-            `Anti-slip torque response: grip force boosted to ${res.ctrl.grip_force_percent.toFixed(0)}% (${res.ctrl.current_pressure_n.toFixed(1)} N)`
-          );
+        // 12–15 sec: Adaptive Controller Stabilizes Grip
+        else if (elapsedSeconds === 12) {
+          setDemoPhase('12–15s: Target pressure reached. Controller maintaining stable grip');
+          const res = await executePipelineStep('POWER_GRIP', true, false);
+          if (res?.ctrl) {
+            addLog(
+              'ADAPTIVE',
+              `Stable grip achieved (${res.ctrl.current_pressure_n.toFixed(1)} N within deadband). Servos holding position.`
+            );
+          }
+        } else if (elapsedSeconds < 15) {
+          setDemoPhase(`12–15s: Grasp equilibrium maintained (${elapsedSeconds}s)`);
+          await executePipelineStep('POWER_GRIP', true, false);
         }
-      } else if (elapsedSeconds < 18) {
-        setDemoPhase(`15–18s: Anti-slip reflex response active (${elapsedSeconds}s)`);
-        await executePipelineStep('POWER_GRIP', true, false);
-      }
 
-      // 18–21 sec: Controller Increases Grip Force to Recover Stability
-      else if (elapsedSeconds === 18) {
-        setDemoPhase('18–21s: Adaptive controller executes compensatory grasp stabilization');
-        const res = await executePipelineStep('POWER_GRIP', true, false);
-        if (res?.ctrl) {
-          addLog(
-            'ADAPTIVE',
-            `Stabilization in progress: pressure at ${res.ctrl.current_pressure_n.toFixed(1)} N (Stability: ${res.ctrl.stability_index.toFixed(1)}%)`
-          );
+        // 15–18 sec: Simulated Slip Event Detected
+        else if (elapsedSeconds === 15) {
+          setDemoPhase('15–18s: Simulated payload slip event detected!');
+          slipTriggerRef.current = true;
+          const res = await executePipelineStep('POWER_GRIP', true, true);
+          addLog('TACTILE', 'ALERT: Sudden micro-slip detected at tactile sensor interface!');
+          if (res?.ctrl) {
+            addLog(
+              'ADAPTIVE',
+              `Anti-slip torque response: grip force boosted to ${res.ctrl.grip_force_percent.toFixed(0)}% (${res.ctrl.current_pressure_n.toFixed(1)} N)`
+            );
+          }
+        } else if (elapsedSeconds < 18) {
+          setDemoPhase(`15–18s: Anti-slip reflex response active (${elapsedSeconds}s)`);
+          await executePipelineStep('POWER_GRIP', true, false);
         }
-      } else if (elapsedSeconds < 21) {
-        setDemoPhase(`18–21s: Slip recovery and force regulation (${elapsedSeconds}s)`);
-        await executePipelineStep('POWER_GRIP', true, false);
-      }
 
-      // 21–24 sec: Stable Grip Restored
-      else if (elapsedSeconds === 21) {
-        setDemoPhase('21–24s: Stable grip re-established. Slip condition cleared');
-        const res = await executePipelineStep('POWER_GRIP', true, false);
-        if (res?.ctrl) {
-          addLog(
-            'TACTILE',
-            `Payload motion arrested. Grasp stability restored to ${res.ctrl.stability_index.toFixed(1)}% (${res.ctrl.current_pressure_n.toFixed(1)} N)`
-          );
+        // 18–21 sec: Controller Increases Grip Force to Recover Stability
+        else if (elapsedSeconds === 18) {
+          setDemoPhase('18–21s: Adaptive controller executes compensatory grasp stabilization');
+          const res = await executePipelineStep('POWER_GRIP', true, false);
+          if (res?.ctrl) {
+            addLog(
+              'ADAPTIVE',
+              `Stabilization in progress: pressure at ${res.ctrl.current_pressure_n.toFixed(1)} N (Stability: ${res.ctrl.stability_index.toFixed(1)}%)`
+            );
+          }
+        } else if (elapsedSeconds < 21) {
+          setDemoPhase(`18–21s: Slip recovery and force regulation (${elapsedSeconds}s)`);
+          await executePipelineStep('POWER_GRIP', true, false);
         }
-      } else if (elapsedSeconds < 24) {
-        setDemoPhase(`21–24s: Grasp stabilized and secure (${elapsedSeconds}s)`);
-        await executePipelineStep('POWER_GRIP', true, false);
-      }
 
-      // 24–27 sec: Release
-      else if (elapsedSeconds === 24) {
-        setDemoPhase('24–27s: User intention: Release. Fingers extending');
-        setActiveGrip('RELEASE');
-        const res = await executePipelineStep('RELEASE', false, false);
-        addLog('SIGNAL', 'Transient release EMG profile received');
-        if (res?.pred) {
-          addLog('INFERENCE', `Classifier output: ${res.pred.predicted_grip.replace('_', ' ')}`);
+        // 21–24 sec: Stable Grip Restored
+        else if (elapsedSeconds === 21) {
+          setDemoPhase('21–24s: Stable grip re-established. Slip condition cleared');
+          const res = await executePipelineStep('POWER_GRIP', true, false);
+          if (res?.ctrl) {
+            addLog(
+              'TACTILE',
+              `Payload motion arrested. Grasp stability restored to ${res.ctrl.stability_index.toFixed(1)}% (${res.ctrl.current_pressure_n.toFixed(1)} N)`
+            );
+          }
+        } else if (elapsedSeconds < 24) {
+          setDemoPhase(`21–24s: Grasp stabilized and secure (${elapsedSeconds}s)`);
+          await executePipelineStep('POWER_GRIP', true, false);
         }
-        addLog('ACTUATION', 'Actuator command: open fingers to 0 deg');
-      } else if (elapsedSeconds < 27) {
-        setDemoPhase(`24–27s: Actuators returning to open position (${elapsedSeconds}s)`);
-        setActiveGrip('RELEASE');
-        await executePipelineStep('RELEASE', false, false);
-      }
 
-      // 27 sec: End of demo
-      else {
-        clearInterval(interval);
-        setIsDemoRunning(false);
-        setDemoPhase('');
-        setActiveGrip('OPEN');
-        await executePipelineStep('OPEN', false, false);
-        setDemoSuccessCount((c) => c + 1);
-        addLog('SYSTEM', 'Automated demonstration sequence completed successfully.');
+        // 24–27 sec: Release
+        else if (elapsedSeconds === 24) {
+          setDemoPhase('24–27s: User intention: Release. Fingers extending');
+          setActiveGrip('RELEASE');
+          const res = await executePipelineStep('RELEASE', false, false);
+          addLog('SIGNAL', 'Transient release EMG profile received');
+          if (res?.pred) {
+            addLog('INFERENCE', `Classifier output: ${res.pred.predicted_grip.replace('_', ' ')}`);
+          }
+          addLog('ACTUATION', 'Actuator command: open fingers to 0 deg');
+        } else if (elapsedSeconds < 27) {
+          setDemoPhase(`24–27s: Actuators returning to open position (${elapsedSeconds}s)`);
+          setActiveGrip('RELEASE');
+          await executePipelineStep('RELEASE', false, false);
+        }
+
+        // 27 sec: End of demo
+        else {
+          clearInterval(interval);
+          setIsDemoRunning(false);
+          setDemoPhase('');
+          setActiveGrip('OPEN');
+          await executePipelineStep('OPEN', false, false);
+          setDemoSuccessCount((c) => c + 1);
+          addLog('SYSTEM', 'Automated demonstration sequence completed successfully.');
+        }
+      } finally {
+        inFlight = false;
       }
     }, 1000);
 

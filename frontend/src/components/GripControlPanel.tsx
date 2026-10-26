@@ -127,7 +127,7 @@ export const GripControlPanel: React.FC<GripControlPanelProps> = ({
           <div className="flex items-center space-x-2">
             <span className="w-2.5 h-2.5 rounded-full bg-technical-red inline-block" />
             <span className="text-xs text-foreground font-bold">
-              {slip_detected ? 'SLIP PERTURBATION DETECTED' : 'ANTI-SLIP REFLEX ENGAGED'}
+              {slip_detected ? 'SOFTWARE-INJECTED SLIP DISTURBANCE' : 'ANTI-SLIP REFLEX ENGAGED'}
             </span>
           </div>
           <span className="text-xs text-foreground bg-technical-red px-2 py-0.5 rounded font-bold">
@@ -226,14 +226,14 @@ export const GripControlPanel: React.FC<GripControlPanelProps> = ({
       {/* Micro-Slip Disturbance Trigger Button */}
       <div className="flex items-center justify-between pt-2 border-t border-border-subtle">
         <div className="text-[11px] text-foreground-secondary font-mono">
-          Inject shear perturbation to payload:
+          Inject simulated slip disturbance to closed loop:
         </div>
         <button
           onClick={onSimulateSlip}
           disabled={!contact_detected}
           className="text-xs font-mono uppercase tracking-wider px-3.5 py-1.5 rounded border border-border bg-background-elevated hover:bg-border/60 active:bg-border text-foreground font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
         >
-          Simulate Slip Event
+          Simulate Slip Disturbance
         </button>
       </div>
     </div>
