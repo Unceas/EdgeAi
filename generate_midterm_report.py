@@ -9,12 +9,21 @@ import os
 import subprocess
 import PyPDF2
 import docx
+import base64
+
+def get_base64_image(image_path):
+    if os.path.exists(image_path):
+        with open(image_path, "rb") as f:
+            return base64.b64encode(f.read()).decode("utf-8")
+    return ""
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
 
 def create_midterm_html():
-    return r"""<!DOCTYPE html>
+    cec_b64 = get_base64_image(os.path.join("submission", "reports", "cec_logo.png"))
+    ptu_b64 = get_base64_image(os.path.join("submission", "reports", "ptu_logo.png"))
+    html = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -111,10 +120,14 @@ def create_midterm_html():
 </head>
 <body>
 
-<div class="univ-header">
-  <div style="font-size: 14pt; font-weight: 900; color: #0f172a;">CHANDIGARH ENGINEERING COLLEGE JHANJERI</div>
-  <div style="font-size: 10.5pt; font-weight: 700; color: #334155;">Department of Computer Science &amp; Engineering / Robotics and Artificial Intelligence</div>
-  <div style="font-size: 9.5pt; font-weight: 600; color: #64748b;">Affiliated to I.K. Gujral Punjab Technical University, Jalandhar (Batch: 2023–2027)</div>
+<div class="univ-header" style="display: flex; align-items: center; justify-content: space-between; border: 1.5px solid #0f172a; padding: 6px 14px; margin-bottom: 20px; background-color: #f8fafc;">
+  <img src="data:image/png;base64,{cec_b64}" style="height: 52px; width: auto;" alt="CEC Logo">
+  <div style="text-align: center; flex: 1; padding: 0 10px;">
+    <div style="font-size: 13pt; font-weight: 900; color: #0f172a; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+    <div style="font-size: 10.5pt; font-weight: 700; color: #334155;">Department of Computer Science and Engineering</div>
+    <div style="font-size: 9pt; font-weight: 600; color: #64748b;">Affiliated to I.K. Gujral Punjab Technical University, Jalandhar (Batch: 2023–2027)</div>
+  </div>
+  <img src="data:image/png;base64,{ptu_b64}" style="height: 52px; width: auto;" alt="PTU Logo">
 </div>
 
 <h1 class="report-title">MIDTERM PROJECT REPORT<br><span style="font-size: 14pt; font-weight: 800;">EDGE AI SMART PROSTHETIC HAND WITH ADAPTIVE GRIP LEARNING</span></h1>
@@ -127,8 +140,8 @@ def create_midterm_html():
       <b>Academic Session:</b> 2026–2027
     </td>
     <td style="width: 50%; vertical-align: top; border: none; text-align: right;">
-      <b>Project Team:</b> Student Name 1, 2, 3 (Roll Nos: 2330XXX)<br>
-      <b>Project Guide:</b> Dr. Faculty Guide Name<br>
+      <b>Project Team:</b> Moinak Dey (2330838), Roshni Singh (2330850), B. Uma Maheshwar (2330817)<br>
+      <b>Project Guide:</b> Dr. Baljinder Kaur<br>
       <b>Department:</b> CSE / Robotics &amp; AI, CEC Jhanjeri
     </td>
   </tr>
@@ -453,7 +466,7 @@ $ pytest backend/test_pipeline.py -v
   <tr>
     <td style="width: 50%; border: none; vertical-align: top;">
       ___________________________<br>
-      <b>Dr. Faculty Guide Name</b><br>
+      <b>Dr. Baljinder Kaur</b><br>
       Project Supervisor / Assistant Professor<br>
       Dept. of CSE / Robotics &amp; AI
     </td>
@@ -469,6 +482,8 @@ $ pytest backend/test_pipeline.py -v
 </body>
 </html>
 """
+    html = html.replace("{cec_b64}", cec_b64).replace("{ptu_b64}", ptu_b64)
+    return html
 
 def generate_midterm_docx(output_path):
     doc = docx.Document()
@@ -478,17 +493,44 @@ def generate_midterm_docx(output_path):
         s.left_margin = Inches(1.0)
         s.right_margin = Inches(1.0)
 
-    p_univ = doc.add_paragraph()
-    p_univ.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_u1 = p_univ.add_run("CHANDIGARH ENGINEERING COLLEGE JHANJERI\n")
+    # Running Header
+    for s in doc.sections:
+        s.top_margin = Inches(1.0)
+        s.bottom_margin = Inches(1.0)
+        s.left_margin = Inches(1.0)
+        s.right_margin = Inches(1.0)
+        hdr = s.header
+        p_hdr = hdr.paragraphs[0]
+        p_hdr.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        r_h = p_hdr.add_run("CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI | Dept. of CSE")
+        r_h.font.name = 'Times New Roman'
+        r_h.font.size = Pt(8.5)
+        r_h.font.color.rgb = RGBColor(0x64, 0x74, 0x8b)
+
+    # University Logos Header
+    cec_logo_path = os.path.abspath(os.path.join("submission", "reports", "cec_logo.png"))
+    ptu_logo_path = os.path.abspath(os.path.join("submission", "reports", "ptu_logo.png"))
+    t_logos = doc.add_table(rows=1, cols=3)
+    t_logos.alignment = WD_TABLE_ALIGNMENT.CENTER
+    if os.path.exists(cec_logo_path):
+        p_l = t_logos.cell(0, 0).paragraphs[0]
+        p_l.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        p_l.add_run().add_picture(cec_logo_path, width=Inches(1.1))
+    p_mid = t_logos.cell(0, 1).paragraphs[0]
+    p_mid.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r_u1 = p_mid.add_run("CHANDIGARH ENGINEERING COLLEGE JHANJERI\n")
     r_u1.bold = True
-    r_u1.font.size = Pt(14)
-    r_u2 = p_univ.add_run("Department of Computer Science & Engineering / Robotics and Artificial Intelligence\n")
+    r_u1.font.size = Pt(13)
+    r_u2 = p_mid.add_run("Department of Computer Science & Engineering\n")
     r_u2.bold = True
-    r_u2.font.size = Pt(11)
-    r_u3 = p_univ.add_run("Affiliated to I.K. Gujral Punjab Technical University, Jalandhar (Batch: 2023–2027)")
-    r_u3.font.size = Pt(10)
-    p_univ.paragraph_format.space_after = Pt(12)
+    r_u2.font.size = Pt(10.5)
+    r_u3 = p_mid.add_run("Affiliated to IKGPTU, Jalandhar (Batch: 2023–2027)")
+    r_u3.font.size = Pt(9.5)
+    if os.path.exists(ptu_logo_path):
+        p_r = t_logos.cell(0, 2).paragraphs[0]
+        p_r.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        p_r.add_run().add_picture(ptu_logo_path, width=Inches(0.85))
+    doc.add_paragraph().paragraph_format.space_after = Pt(10)
 
     p_t = doc.add_paragraph()
     p_t.alignment = WD_ALIGN_PARAGRAPH.CENTER

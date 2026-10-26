@@ -3,7 +3,7 @@ Back Matter: References, Publications Division Annexure, and Appendices A-D
 Module for 80+ page Final Project Report.
 Contains 35 formatted IEEE academic references matching Source_Bibliography.md,
 Publications Annexure, Appendix A (Setup Guide), Appendix B (API Schemas),
-Appendix C (27 Pytest Execution Transcript), and Appendix D (Full Source Code Listings).
+Appendix C (27 Pytest Execution Transcript), and Appendix D (Full Verbatim Source Code Listings).
 """
 
 import os
@@ -23,20 +23,27 @@ def get_backmatter_html():
     emg_sim_code = read_source_file("backend/emg_simulator.py")
     main_code = read_source_file("backend/main.py")
     test_pipeline_code = read_source_file("backend/test_pipeline.py")
+    
     app_code = read_source_file("frontend/src/App.tsx")
     emg_chart_code = read_source_file("frontend/src/components/EmgChart.tsx")
     grip_panel_code = read_source_file("frontend/src/components/GripControlPanel.tsx")
     hand_vis_code = read_source_file("frontend/src/components/HandVisualization.tsx")
+    ctrl_toolbar_code = read_source_file("frontend/src/components/ControlToolbar.tsx")
+    event_log_code = read_source_file("frontend/src/components/EventLog.tsx")
+    infer_panel_code = read_source_file("frontend/src/components/InferencePanel.tsx")
+    metrics_panel_code = read_source_file("frontend/src/components/MetricsPanel.tsx")
+    api_ts_code = read_source_file("frontend/src/api.ts")
+    types_ts_code = read_source_file("frontend/src/types.ts")
 
     template = """
 <!-- REFERENCES -->
 <div class="page-break"></div>
 <div class="univ-header">
-  <div style="font-size: 13pt; font-weight: 800;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
-  <div style="font-size: 10pt; font-weight: 700; color: #334155;">Department of Computer Science & Engineering / Robotics and Artificial Intelligence</div>
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
 </div>
 
-<h1 class="chapter-title">REFERENCES</h1>
+<h1 style="font-size: 16pt; font-weight: bold; text-align: center; margin-bottom: 25px; border-bottom: 1.5px solid #0f172a; padding-bottom: 6px;">REFERENCES</h1>
 
 <ol class="references-list" style="font-size: 10pt; line-height: 1.6; padding-left: 24px;">
   <li>X. Chen, D. Zhang, and X. Zhu, "A Review of Myoelectric Control for Prosthetic Hand Manipulation," <i>Biomimetics</i>, vol. 8, no. 3, p. 328, 2023. DOI: 10.3390/biomimetics8030328.</li>
@@ -80,11 +87,11 @@ def get_backmatter_html():
 
 <!-- PUBLICATIONS DIVISION ANNEXURE -->
 <div class="univ-header">
-  <div style="font-size: 13pt; font-weight: 800;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
-  <div style="font-size: 10pt; font-weight: 700; color: #334155;">Department of Computer Science & Engineering / Robotics and Artificial Intelligence</div>
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
 </div>
 
-<h1 class="chapter-title">PUBLICATIONS DIVISION (ANNEXURE)</h1>
+<h1 style="font-size: 16pt; font-weight: bold; text-align: center; margin-bottom: 25px; border-bottom: 1.5px solid #0f172a; padding-bottom: 6px;">PUBLICATIONS DIVISION (ANNEXURE)</h1>
 
 <div class="callout-box success">
   <div class="callout-title">Institutional Research Paper Submission Details</div>
@@ -108,15 +115,15 @@ def get_backmatter_html():
     </tr>
     <tr>
       <td style="font-weight: bold; border-bottom: 1px solid #e2e8f0; padding: 6px 0;">Authors:</td>
-      <td style="border-bottom: 1px solid #e2e8f0; padding: 6px 0;">Student Name 1, Student Name 2, Student Name 3, and Dr. Faculty Guide Name (Corresponding Author)</td>
+      <td style="border-bottom: 1px solid #e2e8f0; padding: 6px 0;"><b>Moinak Dey</b>, <b>Roshni Singh</b>, <b>B. Uma Maheshwar</b>, and <b>Dr. Baljinder Kaur</b> (Corresponding Author)</td>
     </tr>
     <tr>
       <td style="font-weight: bold; border-bottom: 1px solid #e2e8f0; padding: 6px 0;">Affiliation:</td>
-      <td style="border-bottom: 1px solid #e2e8f0; padding: 6px 0;">Department of Computer Science &amp; Engineering / Robotics and Artificial Intelligence, Chandigarh Engineering College Jhanjeri, Mohali, Punjab, India</td>
+      <td style="border-bottom: 1px solid #e2e8f0; padding: 6px 0;">Department of Computer Science and Engineering, Chandigarh Engineering College Jhanjeri, Mohali, Punjab, India</td>
     </tr>
     <tr>
       <td style="font-weight: bold; border-bottom: 1px solid #e2e8f0; padding: 6px 0;">Manuscript Status:</td>
-      <td style="border-bottom: 1px solid #e2e8f0; padding: 6px 0; color: #166534; font-weight: bold;">Final Manuscript Prepared; Ready for Institutional Sign-Off and Conference Portal Upload</td>
+      <td style="border-bottom: 1px solid #e2e8f0; padding: 6px 0; color: #166534; font-weight: bold;">Final Manuscript Prepared; Ready for Institutional Sign-Off and Conference Upload</td>
     </tr>
   </table>
 
@@ -130,11 +137,11 @@ def get_backmatter_html():
 
 <!-- APPENDIX A -->
 <div class="univ-header">
-  <div style="font-size: 13pt; font-weight: 800;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
-  <div style="font-size: 10pt; font-weight: 700; color: #334155;">Department of Computer Science & Engineering / Robotics and Artificial Intelligence</div>
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
 </div>
 
-<h1 class="chapter-title">APPENDIX A<br>SYSTEM SETUP &amp; INSTALLATION GUIDE</h1>
+<h1 style="font-size: 16pt; font-weight: bold; text-align: center; margin-bottom: 25px; border-bottom: 1.5px solid #0f172a; padding-bottom: 6px;">APPENDIX A<br>SYSTEM SETUP &amp; INSTALLATION GUIDE</h1>
 
 <h2>A.1 Prerequisites &amp; Environment Setup</h2>
 <p>To reproduce and execute the Edge AI Smart Prosthetic Hand software simulation prototype, the host machine must satisfy the following development environment requirements:</p>
@@ -192,11 +199,11 @@ pause
 
 <!-- APPENDIX B -->
 <div class="univ-header">
-  <div style="font-size: 13pt; font-weight: 800;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
-  <div style="font-size: 10pt; font-weight: 700; color: #334155;">Department of Computer Science & Engineering / Robotics and Artificial Intelligence</div>
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
 </div>
 
-<h1 class="chapter-title">APPENDIX B<br>RESTFUL API SPECIFICATION &amp; DATA SCHEMAS</h1>
+<h1 style="font-size: 16pt; font-weight: bold; text-align: center; margin-bottom: 25px; border-bottom: 1.5px solid #0f172a; padding-bottom: 6px;">APPENDIX B<br>RESTFUL API SPECIFICATION &amp; DATA SCHEMAS</h1>
 
 <h2>B.1 Complete Pydantic Schema Definitions</h2>
 <pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 14px; border-radius: 6px; font-size: 8.5pt; font-family: monospace; line-height: 1.35;">
@@ -249,11 +256,11 @@ class ControlStepResponse(BaseModel):
 
 <!-- APPENDIX C -->
 <div class="univ-header">
-  <div style="font-size: 13pt; font-weight: 800;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
-  <div style="font-size: 10pt; font-weight: 700; color: #334155;">Department of Computer Science & Engineering / Robotics and Artificial Intelligence</div>
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
 </div>
 
-<h1 class="chapter-title">APPENDIX C<br>PYTEST AUTOMATED TEST EXECUTION TRANSCRIPT</h1>
+<h1 style="font-size: 16pt; font-weight: bold; text-align: center; margin-bottom: 25px; border-bottom: 1.5px solid #0f172a; padding-bottom: 6px;">APPENDIX C<br>PYTEST AUTOMATED TEST EXECUTION TRANSCRIPT</h1>
 
 <h2>C.1 Verbatim Automated Test Run Log</h2>
 <pre style="background: #0f172a; color: #f8fafc; padding: 14px; border-radius: 6px; font-family: monospace; font-size: 8.5pt; line-height: 1.35;">
@@ -326,11 +333,11 @@ backend/test_pipeline.py::TestApiEndpoints::test_calibration_endpoint
 
 <!-- APPENDIX D -->
 <div class="univ-header">
-  <div style="font-size: 13pt; font-weight: 800;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
-  <div style="font-size: 10pt; font-weight: 700; color: #334155;">Department of Computer Science & Engineering / Robotics and Artificial Intelligence</div>
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
 </div>
 
-<h1 class="chapter-title">APPENDIX D<br>CORE ALGORITHMIC SOURCE CODE LISTINGS</h1>
+<h1 style="font-size: 16pt; font-weight: bold; text-align: center; margin-bottom: 25px; border-bottom: 1.5px solid #0f172a; padding-bottom: 6px;">APPENDIX D<br>CORE ALGORITHMIC SOURCE CODE LISTINGS</h1>
 
 <h2>D.1 Feature Extraction &amp; Machine Learning Engine (`backend/ml_model.py`)</h2>
 <pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 8pt; font-family: monospace; line-height: 1.3;">
@@ -339,8 +346,8 @@ __ML_MODEL_CODE__
 
 <div class="page-break"></div>
 <div class="univ-header">
-  <div style="font-size: 13pt; font-weight: 800;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
-  <div style="font-size: 10pt; font-weight: 700; color: #334155;">Department of Computer Science & Engineering / Robotics and Artificial Intelligence</div>
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
 </div>
 <h2>D.2 Closed-Loop Tactile Grip Controller (`backend/grip_controller.py`)</h2>
 <pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 8pt; font-family: monospace; line-height: 1.3;">
@@ -349,8 +356,8 @@ __GRIP_CTRL_CODE__
 
 <div class="page-break"></div>
 <div class="univ-header">
-  <div style="font-size: 13pt; font-weight: 800;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
-  <div style="font-size: 10pt; font-weight: 700; color: #334155;">Department of Computer Science & Engineering / Robotics and Artificial Intelligence</div>
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
 </div>
 <h2>D.3 Deterministic Synthetic sEMG Signal Generator (`backend/emg_simulator.py`)</h2>
 <pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 8pt; font-family: monospace; line-height: 1.3;">
@@ -359,8 +366,8 @@ __EMG_SIM_CODE__
 
 <div class="page-break"></div>
 <div class="univ-header">
-  <div style="font-size: 13pt; font-weight: 800;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
-  <div style="font-size: 10pt; font-weight: 700; color: #334155;">Department of Computer Science & Engineering / Robotics and Artificial Intelligence</div>
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
 </div>
 <h2>D.4 FastAPI REST Application &amp; Validation Schemas (`backend/main.py`)</h2>
 <pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 8pt; font-family: monospace; line-height: 1.3;">
@@ -369,8 +376,8 @@ __MAIN_CODE__
 
 <div class="page-break"></div>
 <div class="univ-header">
-  <div style="font-size: 13pt; font-weight: 800;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
-  <div style="font-size: 10pt; font-weight: 700; color: #334155;">Department of Computer Science & Engineering / Robotics and Artificial Intelligence</div>
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
 </div>
 <h2>D.5 Complete 27-Test Automated Pytest Test Suite (`backend/test_pipeline.py`)</h2>
 <pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 8pt; font-family: monospace; line-height: 1.3;">
@@ -379,8 +386,8 @@ __TEST_PIPELINE_CODE__
 
 <div class="page-break"></div>
 <div class="univ-header">
-  <div style="font-size: 13pt; font-weight: 800;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
-  <div style="font-size: 10pt; font-weight: 700; color: #334155;">Department of Computer Science & Engineering / Robotics and Artificial Intelligence</div>
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
 </div>
 <h2>D.6 Virtual Prosthetic Dashboard &amp; Kinematic Controller (`frontend/src/App.tsx`)</h2>
 <pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 8pt; font-family: monospace; line-height: 1.3;">
@@ -389,8 +396,8 @@ __APP_CODE__
 
 <div class="page-break"></div>
 <div class="univ-header">
-  <div style="font-size: 13pt; font-weight: 800;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
-  <div style="font-size: 10pt; font-weight: 700; color: #334155;">Department of Computer Science & Engineering / Robotics and Artificial Intelligence</div>
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
 </div>
 <h2>D.7 Responsive Canvas Oscilloscope Component (`frontend/src/components/EmgChart.tsx`)</h2>
 <pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 8pt; font-family: monospace; line-height: 1.3;">
@@ -399,8 +406,8 @@ __EMG_CHART_CODE__
 
 <div class="page-break"></div>
 <div class="univ-header">
-  <div style="font-size: 13pt; font-weight: 800;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
-  <div style="font-size: 10pt; font-weight: 700; color: #334155;">Department of Computer Science & Engineering / Robotics and Artificial Intelligence</div>
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
 </div>
 <h2>D.8 Grip Control &amp; Tactile Disturbance Panel (`frontend/src/components/GripControlPanel.tsx`)</h2>
 <pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 8pt; font-family: monospace; line-height: 1.3;">
@@ -409,12 +416,72 @@ __GRIP_PANEL_CODE__
 
 <div class="page-break"></div>
 <div class="univ-header">
-  <div style="font-size: 13pt; font-weight: 800;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
-  <div style="font-size: 10pt; font-weight: 700; color: #334155;">Department of Computer Science & Engineering / Robotics and Artificial Intelligence</div>
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
 </div>
 <h2>D.9 3D Articulated Kinematic Hand Visualization (`frontend/src/components/HandVisualization.tsx`)</h2>
 <pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 8pt; font-family: monospace; line-height: 1.3;">
 __HAND_VIS_CODE__
+</pre>
+
+<div class="page-break"></div>
+<div class="univ-header">
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
+</div>
+<h2>D.10 Frontend Control Toolbar Component (`frontend/src/components/ControlToolbar.tsx`)</h2>
+<pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 8pt; font-family: monospace; line-height: 1.3;">
+__CTRL_TOOLBAR_CODE__
+</pre>
+
+<div class="page-break"></div>
+<div class="univ-header">
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
+</div>
+<h2>D.11 Event Log &amp; Disturbance Audit Trail (`frontend/src/components/EventLog.tsx`)</h2>
+<pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 8pt; font-family: monospace; line-height: 1.3;">
+__EVENT_LOG_CODE__
+</pre>
+
+<div class="page-break"></div>
+<div class="univ-header">
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
+</div>
+<h2>D.12 Inference Telemetry &amp; Latency Panel (`frontend/src/components/InferencePanel.tsx`)</h2>
+<pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 8pt; font-family: monospace; line-height: 1.3;">
+__INFER_PANEL_CODE__
+</pre>
+
+<div class="page-break"></div>
+<div class="univ-header">
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
+</div>
+<h2>D.13 Real-Time System Metrics Display (`frontend/src/components/MetricsPanel.tsx`)</h2>
+<pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 8pt; font-family: monospace; line-height: 1.3;">
+__METRICS_PANEL_CODE__
+</pre>
+
+<div class="page-break"></div>
+<div class="univ-header">
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
+</div>
+<h2>D.14 Frontend HTTP Client API Services (`frontend/src/api.ts`)</h2>
+<pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 8pt; font-family: monospace; line-height: 1.3;">
+__API_TS_CODE__
+</pre>
+
+<div class="page-break"></div>
+<div class="univ-header">
+  <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase;">CHANDIGARH ENGINEERING COLLEGE JHANJERI, MOHALI</div>
+  <div style="font-size: 10.5pt; font-weight: bold; color: #334155;">Department of Computer Science and Engineering</div>
+</div>
+<h2>D.15 TypeScript Interface &amp; Type Contracts (`frontend/src/types.ts`)</h2>
+<pre style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 8pt; font-family: monospace; line-height: 1.3;">
+__TYPES_TS_CODE__
 </pre>
 """
 
@@ -427,4 +494,10 @@ __HAND_VIS_CODE__
     res = res.replace("__EMG_CHART_CODE__", emg_chart_code)
     res = res.replace("__GRIP_PANEL_CODE__", grip_panel_code)
     res = res.replace("__HAND_VIS_CODE__", hand_vis_code)
+    res = res.replace("__CTRL_TOOLBAR_CODE__", ctrl_toolbar_code)
+    res = res.replace("__EVENT_LOG_CODE__", event_log_code)
+    res = res.replace("__INFER_PANEL_CODE__", infer_panel_code)
+    res = res.replace("__METRICS_PANEL_CODE__", metrics_panel_code)
+    res = res.replace("__API_TS_CODE__", api_ts_code)
+    res = res.replace("__TYPES_TS_CODE__", types_ts_code)
     return res

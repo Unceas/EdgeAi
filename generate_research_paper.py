@@ -197,10 +197,10 @@ def create_research_paper_html():
   </div>
   <h1 class="paper-title">Design and Digital Simulation of an Edge AI-Enabled Myoelectric Prosthetic Hand with Adaptive Closed-Loop Grasping</h1>
   <div class="authors-block">
-    <b>Student Name 1</b>, <b>Student Name 2</b>, <b>Student Name 3</b>, and <b>Dr. Faculty Guide Name</b> (Corresponding Author)<br>
-    <span class="affiliation">Department of Computer Science &amp; Engineering / Robotics and Artificial Intelligence<br>
+    <b>Moinak Dey</b>, <b>Roshni Singh</b>, <b>B. Uma Maheshwar</b>, and <b>Dr. Baljinder Kaur</b> (Corresponding Author)<br>
+    <span class="affiliation">Department of Computer Science and Engineering<br>
     Chandigarh Engineering College Jhanjeri, Mohali, Punjab - 140307, India<br>
-    Affiliated to I.K. Gujral Punjab Technical University, Jalandhar</span>
+    Affiliated to I.K. Gujral Punjab Technical University, Jalandhar (Batch: 2023–2027)</span>
   </div>
 </div>
 
@@ -563,6 +563,13 @@ def generate_research_paper_docx(output_path):
         s.bottom_margin = Inches(0.75)
         s.left_margin = Inches(0.75)
         s.right_margin = Inches(0.75)
+        hdr = s.header
+        p_hdr = hdr.paragraphs[0]
+        p_hdr.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        r_h = p_hdr.add_run("IEEE ICRAI / CEC Jhanjeri, Mohali | Project-II")
+        r_h.font.name = 'Times New Roman'
+        r_h.font.size = Pt(8.0)
+        r_h.font.color.rgb = RGBColor(0x64, 0x74, 0x8b)
 
     p_venue = doc.add_paragraph()
     p_venue.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -579,10 +586,10 @@ def generate_research_paper_docx(output_path):
 
     p_auth = doc.add_paragraph()
     p_auth.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_a = p_auth.add_run("Student Name 1, Student Name 2, Student Name 3, and Dr. Faculty Guide Name (Corresponding Author)\n")
+    r_a = p_auth.add_run("Moinak Dey, Roshni Singh, B. Uma Maheshwar, and Dr. Baljinder Kaur (Corresponding Author)\n")
     r_a.bold = True
     r_a.font.size = Pt(10)
-    r_aff = p_auth.add_run("Department of Computer Science & Engineering / Robotics and Artificial Intelligence\nChandigarh Engineering College Jhanjeri, Mohali, Punjab - 140307, India\nAffiliated to I.K. Gujral Punjab Technical University, Jalandhar")
+    r_aff = p_auth.add_run("Department of Computer Science and Engineering\nChandigarh Engineering College Jhanjeri, Mohali, Punjab - 140307, India\nAffiliated to I.K. Gujral Punjab Technical University, Jalandhar (Batch: 2023–2027)")
     r_aff.font.size = Pt(9)
     r_aff.font.italic = True
     p_auth.paragraph_format.space_after = Pt(14)
