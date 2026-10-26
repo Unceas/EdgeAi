@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edge AI Smart Prosthetic Hand - Showcase Handbook & Survival Guide</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 15mm 18mm 15mm;
+      @bottom-right {
+        content: counter(page);
+        font-size: 9pt;
+        color: #64748b;
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #0f172a;
+      line-height: 1.5;
+      font-size: 10pt;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Cover / Header Header */
+    .doc-header {
+      text-align: center;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+    }
+
+    h1.doc-title {
+      font-size: 20pt;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0 0 4px 0;
+      color: #0f172a;
+      text-transform: uppercase;
+    }
+
+    .doc-subtitle {
+      font-size: 12.5pt;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0 0 6px 0;
+      letter-spacing: -0.01em;
+    }
+
+    .doc-meta {
+      font-size: 9.5pt;
+      color: #475569;
+      font-weight: 500;
+      margin: 0 0 4px 0;
+    }
+
+    .doc-bullets {
+      font-size: 8.5pt;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    /* Core Callout Box */
+    .important-banner {
+      background-color: #f1f5f9;
+      border: 1.5px solid #cbd5e1;
+      border-left: 5px solid #0f172a;
+      padding: 10px 14px;
+      margin: 14px 0;
+      text-align: center;
+      border-radius: 4px;
+    }
+
+    .important-banner .label {
+      font-size: 8.5pt;
+      font-weight: 800;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 3px;
+    }
+
+    .important-banner .quote {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    /* Headings */
+    h2 {
+      font-size: 12pt;
+      font-weight: 800;
+      color: #0f172a;
+      border-bottom: 1px solid #cbd5e1;
+      padding-bottom: 4px;
+      margin-top: 18px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      page-break-after: avoid;
+    }
+
+    h3 {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #1e293b;
+      margin-top: 12px;
+      margin-bottom: 4px;
+      page-break-after: avoid;
+    }
+
+    p {
+      margin: 0 0 8px 0;
+    }
+
+    ul, ol {
+      margin: 0 0 10px 0;
+      padding-left: 18px;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 14px 0;
+      font-size: 9pt;
+      page-break-inside: avoid;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+      text-align: left;
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      font-size: 8.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    td {
+      padding: 6px 10px;
+      border: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+
+    /* Terminal Code blocks */
+    .terminal-box {
+      background-color: #0f172a;
+      color: #f8fafc;
+      font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+      font-size: 8pt;
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin: 6px 0 10px 0;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .terminal-box .comment {
+      color: #94a3b8;
+    }
+
+    .terminal-box .command {
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    /* Q&A Section Styling */
+    .qa-card {
+      margin-bottom: 10px;
+      page-break-inside: avoid;
+      background-color: #ffffff;
+      border-left: 3px solid #64748b;
+      padding: 4px 0 4px 10px;
+    }
+
+    .qa-card.alert-qa {
+      border-left-color: #dc2626;
+    }
+
+    .qa-question {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 9.5pt;
+      margin-bottom: 2px;
+    }
+
+    .qa-answer {
+      color: #334155;
+      font-size: 9pt;
+    }
+
+    /* Pipeline Diagram */
+    .pipeline-diagram {
+      background-color: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 10px;
+      text-align: center;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 8.5pt;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 12px 0;
+      page-break-inside: avoid;
+    }
+
+    .pipeline-step {
+      display: inline-block;
+      background: #ffffff;
+      border: 1px solid #94a3b8;
+      border-radius: 4px;
+      padding: 4px 10px;
+      margin: 3px;
+    }
+
+    .pipeline-arrow {
+      color: #64748b;
+      margin: 0 4px;
+      font-weight: bold;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .avoid-break {
+      page-break-inside: avoid;
+    }
+
+    .tag-red {
+      color: #b91c1c;
+      font-weight: 700;
+    }
+
+    .tag-green {
+      color: #15803d;
+      font-weight: 700;
+    }
+
+    .footer-disclaimer {
+      font-size: 8pt;
+      color: #64748b;
+      text-align: center;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- DOCUMENT HEADER -->
+  <div class="doc-header">
+    <h1 class="doc-title">Edge AI Smart Prosthetic Hand</h1>
+    <div class="doc-subtitle">Showcase Handbook &amp; Survival Guide</div>
+    <div class="doc-meta">Presenter Edition &bull; Phase-1 Software Prototype &bull; 7th Semester Engineering Clinics</div>
+    <div class="doc-bullets">What to say &bull; What to click &bull; What it means &bull; What NOT to claim</div>
+  </div>
+
+  <!-- MOST IMPORTANT LINE -->
+  <div class="important-banner">
+    <div class="label">The Most Important Line (Academic Integrity)</div>
+    <div class="quote">&ldquo;Sensor inputs are simulated for prototype validation.&rdquo;</div>
+  </div>
+
+  <!-- 0. THE ONE-MINUTE MENTAL MODEL -->
+  <h2>0. The One-Minute Mental Model</h2>
+  <p>Think of the smart prosthetic hand as <strong>two brains working together</strong>:</p>
+  <ul>
+    <li><strong>Brain that Listens (ML Classifier):</strong> Simulated 2-channel sEMG &rarr; Time-domain features &rarr; Scikit-Learn Random Forest &rarr; Predicts user intention (Open Hand, Power Grip, Pinch Grip, Release) in <strong>1.5 ms</strong>.</li>
+    <li><strong>Brain that Feels (Adaptive Controller):</strong> Simulated FSR tactile pressure &rarr; Closed-loop feedback controller &rarr; Dynamically steps servo effort, maintains stable grip within deadband, and injects an immediate <strong>+18% torque boost</strong> if slip is detected.</li>
+    <li><strong>Scope:</strong> The current build proves this complete pipeline in software. Physical electrodes, tactile sensors, servos, 3D hand mechanics, and embedded ESP32 deployment represent the scheduled Phase-2 hardware integration.</li>
+  </ul>
+
+  <!-- 1. STARTING THE PROJECT -->
+  <h2>1. Starting the Project (Fast Setup)</h2>
+  <p>If the laptop is restarted, open <strong>two separate PowerShell windows</strong>:</p>
+
+  <div class="avoid-break">
+    <strong>Terminal 1 &mdash; Backend (Brain):</strong>
+    <div class="terminal-box"><span class="comment"># Navigate to backend directory and start FastAPI server</span>
+<span class="command">cd "c:\Users\kayus\Documents\Edge AI Smart Prosthetic Hand with Adaptive Grip Learning\backend"</span>
+<span class="command">python -m uvicorn main:app --host 127.0.0.1 --port 8000</span></div>
+    <p style="font-size: 8.5pt; color: #475569; margin-top: -4px;">Wait until you see: <code>Uvicorn running on http://127.0.0.1:8000</code></p>
+  </div>
+
+  <div class="avoid-break" style="margin-top: 6px;">
+    <strong>Terminal 2 &mdash; Frontend (UI Dashboard):</strong>
+    <div class="terminal-box"><span class="comment"># Navigate to frontend directory and start Vite development server</span>
+<span class="command">cd "c:\Users\kayus\Documents\Edge AI Smart Prosthetic Hand with Adaptive Grip Learning\frontend"</span>
+<span class="command">npm run dev -- --host 127.0.0.1 --port 5173</span></div>
+    <p style="font-size: 8.5pt; color: #475569; margin-top: -4px;">Wait for the local URL, then open Chrome or Edge: <strong><code>http://localhost:5173</code></strong></p>
+  </div>
+
+  <!-- QUICK TROUBLESHOOTING -->
+  <div class="avoid-break" style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 4px; margin-top: 8px;">
+    <strong style="font-size: 9pt; text-transform: uppercase; color: #334155;">Quick Troubleshooting:</strong>
+    <ul style="font-size: 8.5pt; margin: 4px 0 0 0; padding-left: 16px;">
+      <li><strong>Backend already running?</strong> Do not start a duplicate instance; use the existing service.</li>
+      <li><strong>Frontend shows another port (e.g. 5174)?</strong> Open the exact local URL printed by Vite in Terminal 2.</li>
+      <li><strong>Blank/error screen?</strong> Confirm BOTH terminal processes are active and running, then press <code>Ctrl + F5</code>.</li>
+    </ul>
+  </div>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <!-- 2. 20-SECOND EMERGENCY PITCH -->
+  <h2>2. The 20-Second Emergency Pitch</h2>
+  <div style="background-color: #f8fafc; border-left: 4px solid #0f172a; padding: 10px 14px; font-size: 10pt; font-style: italic; margin-bottom: 14px;">
+    &ldquo;This is a software prototype for an intelligent prosthetic hand. It uses simulated muscle signals to recognize the user's intended grip with a lightweight Random Forest machine learning model, then uses a closed-loop feedback controller to adaptively regulate grip pressure based on simulated tactile feedback. The physical hardware is the next phase, so this prototype validates the AI and adaptive control pipeline first.&rdquo;
+  </div>
+
+  <!-- 3. 60-90 SECOND SHOWCASE SCRIPT -->
+  <h2>3. The 60&ndash;90 Second Showcase Script (Word-for-Word)</h2>
+  <ul>
+    <li>&ldquo;Good morning / afternoon Professors.&rdquo;</li>
+    <li>&ldquo;Our project is the <strong>Edge AI Smart Prosthetic Hand with Adaptive Grip Learning</strong>.&rdquo;</li>
+    <li>&ldquo;The core problem we address is that conventional bionic hands lack tactile intelligence: applying fixed motor commands either crushes delicate items or drops slippery objects due to lack of slip feedback, causing high cognitive fatigue.&rdquo;</li>
+    <li>&ldquo;In this Phase-1 software prototype, we digitally validate the complete intelligence and control loop:&rdquo;</li>
+    <li>&ldquo;<strong>First</strong>, we simulate 2-channel sEMG signals representing forearm flexor and extensor activation.&rdquo;</li>
+    <li>&ldquo;<strong>Second</strong>, we extract time-domain features (RMS, MAV, Variance, Energy, and Zero-Crossing Rate) and pass them to an edge-optimized <strong>Random Forest classifier</strong>. It predicts four intended actions&mdash;Open Hand, Power Grip, Pinch Grip, and Release&mdash;in <strong>1.5 milliseconds</strong>.&rdquo;</li>
+    <li>&ldquo;<strong>Third</strong>, instead of applying an open-loop motor angle, we implement a <strong>Closed-Loop Adaptive Grip Controller</strong>. It monitors tactile FSR pressure, regulates torque toward target setpoints, and automatically injects an immediate <strong>+18% torque boost</strong> when a slip disturbance is detected.&rdquo;</li>
+    <li>&ldquo;The current build is explicitly a software simulation; physical electrodes, sensors, servos, and an ESP32 edge controller represent the subsequent hardware phase.&rdquo;</li>
+    <li>&ldquo;Allow me to run our 27-second automated demonstration to show the full pipeline in action.&rdquo; <em>(Click <strong>START DEMO</strong>!)</em></li>
+  </ul>
+
+  <!-- 4. 27-SECOND DEMO WALKTHROUGH -->
+  <h2>4. 27-Second Demo &mdash; What to Click and Say</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 14%;">Time</th>
+        <th style="width: 22%;">Stage</th>
+        <th>What to Point At and Say</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>0&ndash;3 s</strong></td>
+        <td><strong>Open Hand</strong></td>
+        <td>&ldquo;Baseline resting state. Muscle activity is quiet, virtual hand is open, tactile pressure is 0 N.&rdquo;</td>
+      </tr>
+      <tr>
+        <td><strong>3&ndash;6 s</strong></td>
+        <td><strong>Power Grip</strong></td>
+        <td>&ldquo;Muscle contraction surge detected. AI predicts Power Grip with 99% confidence. Fingers begin curling inward.&rdquo;</td>
+      </tr>
+      <tr>
+        <td><strong>6&ndash;9 s</strong></td>
+        <td><strong>Contact</strong></td>
+        <td>&ldquo;Fingers touch payload canister. The green FSR sensor beacon rings light up, registering initial contact.&rdquo;</td>
+      </tr>
+      <tr>
+        <td><strong>9&ndash;12 s</strong></td>
+        <td><strong>Increasing</strong></td>
+        <td>&ldquo;Pressure (28 N) is below the 50 N target setpoint. Notice controller status says INCREASING as it steps up torque.&rdquo;</td>
+      </tr>
+      <tr>
+        <td><strong>12&ndash;15 s</strong></td>
+        <td><strong>Maintaining</strong></td>
+        <td>&ldquo;Target range reached. Controller enters MAINTAINING state, holding the object securely without crushing it.&rdquo;</td>
+      </tr>
+      <tr>
+        <td><strong>15&ndash;18 s</strong></td>
+        <td><strong>Slip Detected</strong></td>
+        <td>&ldquo;A payload slip disturbance is injected! The prominent red SLIP DETECTED warning banner flashes.&rdquo;</td>
+      </tr>
+      <tr>
+        <td><strong>18&ndash;21 s</strong></td>
+        <td><strong>Anti-Slip Reflex</strong></td>
+        <td>&ldquo;The controller activates its anti-slip reflex, instantly boosting servo effort (+18% boost) to arrest payload drop.&rdquo;</td>
+      </tr>
+      <tr>
+        <td><strong>21&ndash;24 s</strong></td>
+        <td><strong>Stabilized</strong></td>
+        <td>&ldquo;Slip condition cleared. Grasp stability is fully restored to 98.6%.&rdquo;</td>
+      </tr>
+      <tr>
+        <td><strong>24&ndash;27 s</strong></td>
+        <td><strong>Release</strong></td>
+        <td>&ldquo;User commands Release. Motors actuate fingers smoothly back to the open resting position.&rdquo;</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- MANUAL BUTTONS AFTER DEMO -->
+  <p style="font-size: 8.5pt; color: #334155; margin-top: 4px;">
+    <strong>Interactive Manual Controls:</strong> Click <strong>PINCH GRIP</strong> (thumb + index precision touch), <strong>SIMULATE SLIP</strong> (triggers anti-slip reflex on demand), <strong>CALIBRATE</strong> (2-sec resting baseline acquisition), and <strong>RESET</strong>.
+  </p>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <!-- 5. WHAT EACH SCREEN ELEMENT MEANS -->
+  <h2>5. What Each Screen Element Means</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 26%;">UI Component</th>
+        <th style="width: 32%;">What It Visually Displays</th>
+        <th>What You Say if Questioned</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Virtual Bionic Hand</strong><br><span style="font-size: 7.5pt; color: #64748b;">(Top Left)</span></td>
+        <td>High-contrast 2D SVG hand filling 70% of panel, active tendons, articulated joints, payload, and FSR beacon halos.</td>
+        <td>&ldquo;Visualizes 5-DOF mechanical finger kinematics, grasped object interaction, and fingertip FSR tactile sensors.&rdquo;</td>
+      </tr>
+      <tr>
+        <td><strong>ML Classifier</strong><br><span style="font-size: 7.5pt; color: #64748b;">(Top Right)</span></td>
+        <td>Bold predicted grip badge, confidence score, 1.5 ms latency, and posterior class probability bars.</td>
+        <td>&ldquo;Our Scikit-Learn Random Forest model performing edge-compatible inference on the 12-dimensional feature vector.&rdquo;</td>
+      </tr>
+      <tr>
+        <td><strong>Synthetic sEMG Waveform</strong><br><span style="font-size: 7.5pt; color: #64748b;">(Middle Left)</span></td>
+        <td>Live oscilloscope trace with &plusmn;1V scale, distinct wave patterns (Power vs Pinch vs Open vs Release) + RMS/MAV cards.</td>
+        <td>&ldquo;Simulated electrical activity of forearm flexor and extensor compartments over a 200 ms window sampled at 1000 Hz.&rdquo;</td>
+      </tr>
+      <tr>
+        <td><strong>Adaptive Grip Controller</strong><br><span style="font-size: 7.5pt; color: #64748b;">(Middle Right)</span></td>
+        <td>7-stage state stepper (IDLE &rarr; CONTACT &rarr; INCREASING &rarr; MAINTAINING &rarr; SLIP &rarr; ANTI-SLIP &rarr; STABILIZED), red banner, pressure bar.</td>
+        <td>&ldquo;Our closed-loop feedback controller regulating tactile pressure and executing an automatic +18% anti-slip torque reflex.&rdquo;</td>
+      </tr>
+      <tr>
+        <td><strong>Prototype Benchmarks</strong><br><span style="font-size: 7.5pt; color: #64748b;">(Bottom Left)</span></td>
+        <td>SYNTHETIC BENCHMARK 100.0% with NOT CLINICAL disclaimer, 1.5 ms latency, Target Edge: ESP32-S3.</td>
+        <td>&ldquo;Validation benchmarks explicitly designated as synthetic data distributions to maintain strict academic honesty.&rdquo;</td>
+      </tr>
+      <tr>
+        <td><strong>Event Log</strong><br><span style="font-size: 7.5pt; color: #64748b;">(Bottom Right)</span></td>
+        <td>Timestamped engineering telemetry stream with category tags ([SIGNAL], [INFERENCE], [TACTILE], [ADAPTIVE]).</td>
+        <td>&ldquo;Real-time audit log tracking signal arrivals, model predictions, tactile contact events, and adaptive force corrections.&rdquo;</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 6. JARGON YOU MUST KNOW -->
+  <h2>6. Jargon You Must Know (Plain English)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">Term</th>
+        <th>Simple, Defensible Explanation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>sEMG</strong></td>
+        <td>Surface Electromyography: tiny electrical voltage pulses generated when muscle fibers contract, measured on forearm skin.</td>
+      </tr>
+      <tr>
+        <td><strong>Edge AI</strong></td>
+        <td>Running a machine learning model directly on an on-device microcontroller (like an ESP32) without needing internet, cloud, or GPUs.</td>
+      </tr>
+      <tr>
+        <td><strong>Random Forest</strong></td>
+        <td>An ensemble machine learning classifier composed of small decision trees voting together. Fast, deterministic, and ideal for microcontrollers.</td>
+      </tr>
+      <tr>
+        <td><strong>Feature Extraction</strong></td>
+        <td>Converting raw waveform time series into concise statistical numbers (RMS, MAV, Variance, Energy, ZCR) that the AI understands.</td>
+      </tr>
+      <tr>
+        <td><strong>RMS / MAV / ZCR</strong></td>
+        <td>Root Mean Square (power level), Mean Absolute Value (contraction magnitude), and Zero Crossing Rate (frequency content).</td>
+      </tr>
+      <tr>
+        <td><strong>FSR Sensor</strong></td>
+        <td>Force-Sensitive Resistor: a sensor pad whose electrical resistance drops as mechanical pressure increases, measuring contact in Newtons.</td>
+      </tr>
+      <tr>
+        <td><strong>Closed-Loop Control</strong></td>
+        <td>A control system that measures actual sensor output, compares it against the desired setpoint, and continuously corrects motor commands.</td>
+      </tr>
+      <tr>
+        <td><strong>Adaptive Grip</strong></td>
+        <td>Automatically adjusting finger squeeze force based on real-time touch feedback rather than blindly driving motors to a fixed angle.</td>
+      </tr>
+      <tr>
+        <td><strong>Calibration</strong></td>
+        <td>Acquiring a 2-second resting baseline reading of an individual user to adjust noise floor offsets and muscle gain multipliers.</td>
+      </tr>
+      <tr>
+        <td><strong>Deadband</strong></td>
+        <td>A &plusmn;3.0 Newton tolerance window around target pressure preventing motor jitter and servo overheating from tiny sensor fluctuations.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 7. WHAT WE HAVE NOW VS WHAT IS NEXT -->
+  <h2>7. What We Have Now vs. What is Next</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 50%;">Current Phase-1 Software Prototype (Built &amp; Validated)</th>
+        <th style="width: 50%;">Future Phase-2 Hardware Integration (Planned Roadmap)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Python FastAPI asynchronous backend</td>
+        <td>Embedded C firmware running on ESP32-S3 / STM32F4</td>
+      </tr>
+      <tr>
+        <td>2-channel synthetic sEMG generation (1000 Hz, 200 ms)</td>
+        <td>MyoWare 2.0 / AD8232 differential analog front-end electrodes</td>
+      </tr>
+      <tr>
+        <td>Feature engineering + Scikit-Learn Random Forest (35 trees)</td>
+        <td>C-converted decision forest via TinyML / MicroML libraries</td>
+      </tr>
+      <tr>
+        <td>Four grip classes: Open, Power Grip, Pinch Grip, Release</td>
+        <td>Real-world EMG dataset collection across amputee subjects</td>
+      </tr>
+      <tr>
+        <td>Closed-loop feedback controller with +18% anti-slip reflex</td>
+        <td>Physical metal-gear micro servos (MG90S) + tendon cables</td>
+      </tr>
+      <tr>
+        <td>Simulated FSR pressure readings &amp; 75 N safety ceiling</td>
+        <td>Physical Interlink FSR 402 sensors on 3D-printed fingertip pads</td>
+      </tr>
+      <tr>
+        <td>Articulated 2D SVG hand canvas with active tendon lines</td>
+        <td>3D-printed bionic chassis with spring-return articulated finger joints</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <!-- 8. FACULTY Q&A -->
+  <h2>8. Faculty Q&amp;A &mdash; Short, Safe, Bulletproof Answers</h2>
+
+  <div class="qa-card">
+    <div class="qa-question">Q1: Why don't you have physical hardware connected?</div>
+    <div class="qa-answer">&ldquo;This showcase is the Phase-1 software validation milestone. In bionic robotics, debugging mechanical failures, noisy bio-electrodes, and ML logic simultaneously causes high failure rates. Validating signal processing, AI inference, and closed-loop slip reflexes digitally ensures our control architecture is verified before hardware fabrication.&rdquo;</div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-question">Q2: Is the EMG signal real?</div>
+    <div class="qa-answer">&ldquo;No, the sEMG signal in this phase is programmatically simulated using frequency-shaped Gaussian process noise based on physiological muscle recruitment literature. Real MyoWare surface electrodes are scheduled for Phase 2.&rdquo;</div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-question">Q3: Is the AI running on an ESP32 right now?</div>
+    <div class="qa-answer">&ldquo;Not in this current software demo. The model is running locally on the computer host. However, our Random Forest uses only 35 shallow trees and takes under 30 KB of memory, which directly fits into an ESP32-S3's 512 KB SRAM.&rdquo;</div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-question">Q4: Why Random Forest instead of Deep Learning (CNN/LSTM)?</div>
+    <div class="qa-answer">&ldquo;Deep learning requires heavy memory, high battery draw, and complex GPU/NPU acceleration incompatible with low-cost prosthetics. Random Forest gives near-instant classification (1.5 ms) on time-domain features with minimal battery consumption.&rdquo;</div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-question">Q5: Why is the accuracy 100%? Isn't that unrealistic?</div>
+    <div class="qa-answer">&ldquo;Yes, absolutely. That is why it is explicitly labeled on the dashboard as <strong>&lsquo;SYNTHETIC BENCHMARK &mdash; NOT CLINICAL VALIDATION&rsquo;</strong>. Because synthetic signals have clean mathematical separation, the model easily achieves 100%. On real human subjects with skin impedance, sweat, and muscle fatigue, we anticipate 85% to 92% accuracy.&rdquo;</div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-question">Q6: What is the difference between open-loop and closed-loop control here?</div>
+    <div class="qa-answer">&ldquo;Open-loop blindly drives servos to a preset angle regardless of payload size or fragility. Closed-loop continuously measures FSR pressure, compares it to target thresholds, and adaptively modulates servo duty cycle to maintain grip and prevent slippage.&rdquo;</div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-question">Q7: How does the anti-slip reflex work?</div>
+    <div class="qa-answer">&ldquo;When tactile shear vibration or a slip event is detected, the controller bypasses steady-state regulation and executes a rapid compensatory force boost of +18% to re-establish friction hold and arrest payload drop.&rdquo;</div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-question">Q8: What prevents the prosthetic hand from crushing a fragile object?</div>
+    <div class="qa-answer">&ldquo;The controller enforces an anti-crush safety ceiling calibrated at 75 Newtons. If sensor pressure exceeds this ceiling, the controller instantly reduces motor torque.&rdquo;</div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-question">Q9: What sampling rate and window size are you using?</div>
+    <div class="qa-answer">&ldquo;A 1000 Hz sampling rate with a 200 ms sliding observation window (200 samples per channel). 200 ms is the established clinical standard because any latency under 300 ms is perceived as instantaneous by the human nervous system.&rdquo;</div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-question">Q10: Does the machine learning model continuously learn online?</div>
+    <div class="qa-answer">&ldquo;Not in the current version. The system performs user calibration (baseline noise floor and MVC scaling) and real-time closed-loop force adaptation. Continual online model retraining is reserved for future exploration.&rdquo;</div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-question">Q11: Is this considered a medical device?</div>
+    <div class="qa-answer">&ldquo;No. This is an engineering clinic prototype designed for academic proof-of-concept validation, not a certified clinical medical device.&rdquo;</div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-question">Q12: What is the main innovation if you didn't invent a new ML algorithm?</div>
+    <div class="qa-answer">&ldquo;The primary innovation is the architectural integration: combining lightweight edge-compatible intention classification with closed-loop tactile force regulation and anti-slip reflexes in a single unified prototype.&rdquo;</div>
+  </div>
+
+  <!-- 9. RED-LINE CLAIMS & 10. CHALLENGE DEFENSE -->
+  <h2>9. Red-Line Claims &mdash; NEVER Say These</h2>
+  <ul>
+    <li><span class="tag-red">&times; NEVER SAY:</span> &ldquo;We connected electrodes to our arms and collected real human EMG.&rdquo; <em>(Sensors are simulated in software).</em></li>
+    <li><span class="tag-red">&times; NEVER SAY:</span> &ldquo;Our AI has 100% real-world accuracy.&rdquo; <em>(Say: 100% is on the synthetic benchmark dataset only).</em></li>
+    <li><span class="tag-red">&times; NEVER SAY:</span> &ldquo;The code is already running inside an ESP32 chip right now.&rdquo; <em>(Say: It is validated on local host, designed for ESP32).</em></li>
+    <li><span class="tag-red">&times; NEVER SAY:</span> &ldquo;This is clinically validated and ready for hospital patients.&rdquo; <em>(It is an engineering clinic prototype).</em></li>
+    <li><span class="tag-red">&times; NEVER SAY:</span> &ldquo;We used Deep Learning, CNNs, or an LLM.&rdquo; <em>(We deliberately used lightweight Scikit-Learn Random Forest).</em></li>
+  </ul>
+
+  <h2>10. If a Professor Challenges You</h2>
+  <p>Never argue or bluff. Use one of these graceful, academically honest phrases:</p>
+  <ul>
+    <li>&ldquo;That metric reflects our synthetic software simulation; empirical verification requires physical sensor acquisition in Phase 2.&rdquo;</li>
+    <li>&ldquo;That is a critical design factor that forms a primary objective for our hardware integration milestone.&rdquo;</li>
+    <li>&ldquo;The current prototype is designed to validate the control logic; physical mechanical constraints will be measured on the physical bench.&rdquo;</li>
+    <li>&ldquo;We haven't measured that experimentally yet, so I want to be honest and not invent an unverified number.&rdquo;</li>
+  </ul>
+
+  <!-- 11. THE TECHNICAL PIPELINE -->
+  <h2>11. The Technical Pipeline &mdash; Memorize This</h2>
+  <div class="pipeline-diagram">
+    <div class="pipeline-step">Simulated sEMG (1000 Hz, 200 ms)</div>
+    <div class="pipeline-arrow">&darr;</div>
+    <div class="pipeline-step">Feature Extraction (RMS, MAV, VAR, SSI, ZCR)</div>
+    <div class="pipeline-arrow">&darr;</div>
+    <div class="pipeline-step">Random Forest Classifier (35 Trees &bull; 1.5 ms Latency)</div>
+    <div class="pipeline-arrow">&darr;</div><br>
+    <div class="pipeline-step">Predicted Grip Intention (Open &bull; Power &bull; Pinch &bull; Release)</div>
+    <div class="pipeline-arrow">&darr;</div>
+    <div class="pipeline-step">Closed-Loop Adaptive Grip Controller (Target Setpoints)</div>
+    <div class="pipeline-arrow">&darr;</div><br>
+    <div class="pipeline-step">Tactile FSR Feedback + Automatic Anti-Slip Torque Reflex (+18%)</div>
+    <div class="pipeline-arrow">&darr;</div>
+    <div class="pipeline-step">5-DOF Articulated Virtual Bionic Hand Kinematics</div>
+  </div>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <!-- 12. LAST 30-SECOND CHECKLIST -->
+  <h2>12. Last 30-Second Pre-Showcase Checklist</h2>
+  <ul>
+    <li>&check; <strong>Terminal 1:</strong> Backend running on <code>http://127.0.0.1:8000</code>.</li>
+    <li>&check; <strong>Terminal 2:</strong> Frontend active on <code>http://localhost:5173</code> with browser open.</li>
+    <li>&check; <strong>Header check:</strong> Top banner shows &ldquo;Simulation Mode Active&rdquo; and &ldquo;Sensor inputs are simulated&rdquo;.</li>
+    <li>&check; <strong>Know the 4 grips:</strong> Open Hand, Power Grip, Pinch Grip, Release.</li>
+    <li>&check; <strong>Know the AI model:</strong> Random Forest, 35 decision trees, 1.5 ms simulated inference latency.</li>
+    <li>&check; <strong>Know the features:</strong> RMS, MAV, Variance, Signal Energy (SSI), Zero Crossing Rate (ZCR).</li>
+    <li>&check; <strong>Know the adaptive reflex:</strong> &plusmn;3 N deadband, 75 N anti-crush ceiling, +18% anti-slip force boost.</li>
+    <li>&check; <strong>Demo execution:</strong> Click <strong>START DEMO</strong> and talk smoothly through the 27-second sequence!</li>
+  </ul>
+
+  <!-- 13. FINAL CHEAT SHEET SUMMARY TABLE -->
+  <h2>13. Final Project Fact Sheet</h2>
+  <table>
+    <tr>
+      <td style="width: 30%;"><strong>Project Title</strong></td>
+      <td>Edge AI Smart Prosthetic Hand with Adaptive Grip Learning</td>
+    </tr>
+    <tr>
+      <td><strong>Current Phase</strong></td>
+      <td>Phase-1 Software Prototype &amp; Digital Simulation</td>
+    </tr>
+    <tr>
+      <td><strong>Input Domain</strong></td>
+      <td>Simulated 2-channel sEMG (Flexor &amp; Extensor compartments, 1000 Hz, 200 ms windows)</td>
+    </tr>
+    <tr>
+      <td><strong>Machine Learning</strong></td>
+      <td>Scikit-Learn Random Forest (35 estimators, depth 7, 1.5 ms inference latency)</td>
+    </tr>
+    <tr>
+      <td><strong>Features Extracted</strong></td>
+      <td>RMS, MAV, Variance, Simple Square Integral (Energy), ZCR, Channel Interaction Ratios</td>
+    </tr>
+    <tr>
+      <td><strong>Grip Intentions</strong></td>
+      <td>Open Hand, Power Grip, Pinch Grip, Release</td>
+    </tr>
+    <tr>
+      <td><strong>Control Paradigm</strong></td>
+      <td>Closed-loop tactile regulation with proportional pressure adjustments and anti-crush limit (75 N)</td>
+    </tr>
+    <tr>
+      <td><strong>Slip Response</strong></td>
+      <td>Immediate +18% compensatory servo torque boost upon shear perturbation</td>
+    </tr>
+    <tr>
+      <td><strong>Target Hardware</strong></td>
+      <td>ESP32-S3 / STM32F4, MyoWare 2.0 sEMG, Interlink FSR 402, MG90S micro servos (Phase 2)</td>
+    </tr>
+  </table>
+
+  <div class="footer-disclaimer">
+    <strong>Golden Reminder:</strong> You do not need to know everything. You only need to know the pipeline, the 27-second demo sequence, and the honest boundary between what is built in software today versus what is planned for hardware tomorrow.
+  </div>
+
+</body>
+</html>
